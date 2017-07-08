@@ -280,9 +280,10 @@ check_traffic_against_limits () {
     done
 }
 get_traffic_from_iptables () {
-        echo "$(iptables -nvx -L $SS_IN_RULES)" "$(iptables -nvx -L $SS_OUT_RULES)" |
-        sed -nr '/ [sd]pt:[0-9]{1,5}$/ s/[sd]pt:([0-9]{1,5})/\1/p' |
-        awk '
+        echo -e "$(iptables -nvx -L $SS_IN_RULES\n)" "$(iptables -nvx -L $SS_OUT_RULES)" |
+        sed -nr '/ [sd]pt:[0-9]{1,5}[[:blank:]]*$/ s/[sd]pt:([0-9]{1,5})/\1/p' |
+        # port=$NF取的是最后一列的数值，NF（不带$）才代表列数
+	awk '
         {
            trans=$2;
            port=$NF;
